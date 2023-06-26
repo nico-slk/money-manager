@@ -1,11 +1,12 @@
 import { DataTypes } from 'sequelize'
 import db from '../db/conection'
 
-const Operations = db.define('Operations', {
+const Operations = db.define('operations', {
   id: {
     type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
-    autoIncrement: true
+    unique: true
   },
   payment_concept: {
     type: DataTypes.STRING,

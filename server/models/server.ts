@@ -1,7 +1,10 @@
 import express, { Application } from 'express';
-import operationRouter from '../routes/operations'
-import loginRouter from '../routes/login'
 import cors from 'cors';
+import operationRouter from '../routes/operationsRoutes'
+import loginRouter from '../routes/auth'
+import userRouter from '../routes/userRoutes'
+import '../models/operations.js'
+import '../models/user.js'
 
 import db from '../db/conection';
 
@@ -11,6 +14,7 @@ class Server {
   private port: string;
   private apiPath = {
     operation: '/api/operation',
+    user: '/api/user',
     login: '/api/login'
   }
 
@@ -34,15 +38,15 @@ class Server {
   routes() {
     this.app.use(this.apiPath.operation, operationRouter);
     this.app.use(this.apiPath.login, loginRouter)
+    this.app.use(this.apiPath.user, userRouter)
   }
 
   async dbConection() {
     try {
+      await db.sync()
       await db.authenticate();
     } catch (error: any) {
       throw new Error(error);
-
-
     }
   }
 
