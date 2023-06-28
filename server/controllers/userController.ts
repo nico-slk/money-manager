@@ -4,6 +4,7 @@ import User from "../models/user";
 
 export const getUser = async (req: Request, res: Response) => {
   const usersList = await User.findAll()
+
   res.json({
     msj: 'Usuarios',
     usersList
@@ -21,11 +22,25 @@ export const getUserByPk = async (req: Request, res: Response) => {
   })
 }
 
-export const putUser = (req: Request, res: Response) => {
+export const patchUser = async (req: Request, res: Response) => {
   const { id } = req.params;
+
+  const { id: userId, ...body } = req.body
+
+  // Encrypt the password
+  if (body.password) {
+    const salt = bcryptjs.genSaltSync()
+    body.password = bcryptjs.hashSync(body.password, salt);
+  }
+
+  // Update and get the updated ser
+  await User.update(body, { where: { id } })
+  const user = await User.findByPk(id)
+
+  // Response
   res.json({
-    msg: 'putUser',
-    id: id
+    msg: 'patchUser',
+    user
   })
 }
 
@@ -34,7 +49,6 @@ export const createUser = async (req: Request, res: Response) => {
 
   // Build new user
   const user = await User.build(body)
-  console.log(user);
 
   // Encrypt the password
   const salt = bcryptjs.genSaltSync()

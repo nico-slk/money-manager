@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 import db from '../db/conection'
 import Operations from "./operations";
 
-const User = db.define('user', {
+const User = db.define('users', {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -34,5 +34,10 @@ User.hasMany(Operations, {
   foreignKey: 'user_id',
   sourceKey: 'id'
 })
+
+User.prototype.toJSON = function () {
+  const { password, ...user } = this.get();
+  return user;
+};
 
 export default User;
