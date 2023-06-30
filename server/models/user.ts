@@ -25,14 +25,14 @@ const User = db.define('users', {
   }
 })
 
-Operations.belongsTo(User, {
-  foreignKey: 'operation_id',
-  targetKey: 'id'
-})
-
 User.hasMany(Operations, {
   foreignKey: 'user_id',
   sourceKey: 'id'
+})
+
+Operations.belongsTo(User, {
+  foreignKey: 'user_id',
+  targetKey: 'id'
 })
 
 User.prototype.toJSON = function () {

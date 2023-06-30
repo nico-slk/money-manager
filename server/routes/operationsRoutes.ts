@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   getAllOperations,
+  getAllOperationsByUserPk,
   getPaginateOperations,
   getRevenuesOperations,
   getExpensesOperations,
@@ -13,6 +14,7 @@ import {
 const router = Router();
 
 router.get('/', getAllOperations)
+router.get('/user/:userId', getAllOperationsByUserPk)
 router.get('/', getPaginateOperations)
 router.get('/rev/', getRevenuesOperations)
 router.get('/exp/', getExpensesOperations)
