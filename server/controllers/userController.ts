@@ -11,9 +11,22 @@ export const getUser = async (req: Request, res: Response) => {
   })
 }
 
-export const getUserByPk = async (req: Request, res: Response) => {
+export const getPaginatedUsers = async (req: Request, res: Response) => {
+  const { offset, limit } = req.query
+  const page = parseInt(offset as string)
+  const pageSize = parseInt(limit as string)
 
+  const usersList = await User.findAndCountAll({ limit: pageSize, offset: page })
+
+  res.json({
+    msj: 'Usuarios',
+    usersList
+  })
+}
+
+export const getUserByPk = async (req: Request, res: Response) => {
   const { id } = req.params;
+
   const user = await User.findByPk(id);
 
   res.json({
@@ -24,7 +37,6 @@ export const getUserByPk = async (req: Request, res: Response) => {
 
 export const patchUser = async (req: Request, res: Response) => {
   const { id } = req.params;
-
   const { id: userId, ...body } = req.body
 
   // Encrypt the password

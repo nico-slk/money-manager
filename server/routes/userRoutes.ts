@@ -4,7 +4,8 @@ import {
   patchUser,
   deleteUser,
   getUser,
-  getUserByPk
+  getUserByPk,
+  getPaginatedUsers
 } from '../controllers/userController'
 import { check } from 'express-validator'
 import { emailExist, isUserExistByPk, validator } from '../middlewares/validator'
@@ -12,6 +13,7 @@ import { emailExist, isUserExistByPk, validator } from '../middlewares/validator
 const router = Router()
 
 router.get('/', getUser)
+router.get('/p/', getPaginatedUsers);
 router.get('/:id', [
   check('id', 'Is not a valid ID').isUUID(),
   check('id').custom(isUserExistByPk),

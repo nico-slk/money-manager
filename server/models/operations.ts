@@ -16,10 +16,6 @@ const Operations = db.define('operations', {
     type: DataTypes.BIGINT,
     allowNull: false
   },
-  date: {
-    type: DataTypes.DATE,
-    allowNull: false
-  },
   type: {
     type: DataTypes.STRING,
     allowNull: false
