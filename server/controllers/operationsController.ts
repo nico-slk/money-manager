@@ -2,104 +2,181 @@ import { Request, Response } from "express"
 import Operations from "../models/operations"
 import User from "../models/user"
 
-// Obtener todos las operaciones --------------- NOT USED
-export const getAllOperations = async (req: Request, res: Response) => {
-  const operationList = await Operations.findAll()
-  res.status(200).json({
-    msg: 'All Operations',
-    operationList
-  })
-}
 
 // Obtener todos las operaciones segun ID de Usuario
-export const getAllOperationsByUserPk = async (req: Request, res: Response) => {
+export const getAllOperationsByUserId = async (req: Request, res: Response) => {
   const { userId } = req.params
-  const operationList = await Operations.findAll({ where: { user_id: userId } })
-  const user = await User.findByPk(userId)
-  const userName = user?.getDataValue('userName')
-  res.status(200).json({
-    msg: `All operations from user with Name: ${userName}`,
-    operationList
-  })
+  try {
+    const operationList = await Operations.findAll({ where: { user_id: userId } })
+    const user = await User.findByPk(userId)
+    const userName = user?.getDataValue('userName')
+
+    res.status(200).json({
+      msg: `All operations from user with Name: ${userName}`,
+      operationList
+    })
+
+  } catch (error) {
+    res.status(500).json({ error })
+  }
 }
 
-// Obtener las operaciones paginadas
-export const getPaginateOperations = async (req: Request, res: Response) => {
+// Obtener las operaciones paginadas por ID de usuario
+export const getPaginateOperationsByUserId = async (req: Request, res: Response) => {
+  const { userId } = req.params
   const { offset, limit } = req.query
   const page = parseInt(offset as string)
   const pageSize = parseInt(limit as string)
-  const operationList = await Operations.findAndCountAll({ limit: pageSize, offset: page })
-  res.status(200).json({
-    msg: 'Paginate Operations',
-    operationList
-  })
+  try {
+    const operationList = await Operations.findAndCountAll({
+      where: {
+        user_id: userId
+      },
+      limit: pageSize,
+      offset: page
+    })
+
+    res.status(200).json({
+      msg: `All operations list of page ${page} from user with ID ${userId}`,
+      operationList
+    })
+
+  } catch (error) {
+    res.status(500).json({ error })
+  }
 }
 
-// Obtener todos los Ingresos
-export const getRevenuesOperations = async (req: Request, res: Response) => {
-  const revenuesOperations = await Operations.findAll({ where: { type: "REVENUE" } })
-  res.status(200).json({
-    msg: 'Revenue Operations',
-    revenuesOperations
-  })
+// Obtener todos los Ingresos por ID de usuario
+export const getRevenuesOperationsByUserId = async (req: Request, res: Response) => {
+  const { userId } = req.params
+  const { offset, limit } = req.query
+  const page = parseInt(offset as string)
+  const pageSize = parseInt(limit as string)
+  try {
+    const revenuesOperations = await Operations.findAndCountAll({
+      where: {
+        user_id: userId,
+        type: "REVENUE"
+      },
+      limit: pageSize,
+      offset: page
+    })
+    res.status(200).json({
+      msg: `All revenues list of page ${page} from user with ID ${userId}`,
+      revenuesOperations
+    })
+  } catch (error) {
+    res.status(500).json({ error })
+  }
 }
 
-// Obtener todos los Egresos
-export const getExpensesOperations = async (req: Request, res: Response) => {
-  const expensesOperations = await Operations.findAll({ where: { type: "EXPENSES" } })
-  res.status(200).json({
-    msg: 'Expenses Operations',
-    expensesOperations
-  })
+// Obtener todos los Egresos por ID de usuario
+export const getExpensesOperationsByUserId = async (req: Request, res: Response) => {
+  const { userId } = req.params
+  const { offset, limit } = req.query
+  const page = parseInt(offset as string)
+  const pageSize = parseInt(limit as string)
+  try {
+    const expensesOperations = await Operations.findAndCountAll({
+      where: {
+        user_id: userId,
+        type: "EXPENSES"
+      },
+      limit: pageSize,
+      offset: page
+    })
+
+    res.status(200).json({
+      msg: `All expenses list of page ${page} from user with ID ${userId}`,
+      expensesOperations
+    })
+
+  } catch (error) {
+    res.status(500).json({ error })
+  }
 }
 
 // Obtener operación por su ID
-export const getOperationByPk = async (req: Request, res: Response) => {
-  const { id } = req.params
-  const operation = await Operations.findOne({ where: { id } })
-  res.status(200).json({
-    msg: 'Operation',
-    operation
-  })
+export const getOperationById = async (req: Request, res: Response) => {
+  const { userId, operationId } = req.params
+  try {
+    const operation = await Operations.findOne({
+      where: {
+        user_id: userId,
+        id: operationId
+      }
+    })
+
+    res.status(200).json({
+      msg: `Operation with ID: ${operationId} from user with ID: ${userId}`,
+      operation
+    })
+  } catch (error) {
+    res.status(500).json({ error })
+  }
 }
 
 // Modificar operación
 export const putOperation = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { body } = req.body
-  await Operations.update(body, { where: { id } })
-  const operation = await Operations.findByPk(id)
-  res.status(200).json({
-    msg: 'putOperation',
-    operation
-  })
+  const { userId, operationId } = req.params
+  const { body } = req
+  try {
+    await Operations.update(body, {
+      where: {
+        user_id: userId,
+        id: operationId
+      }
+    })
+    const operation = await Operations.findByPk(operationId)
+
+    res.status(200).json({
+      msg: `Operation with ID: ${operationId} from user with ID: ${userId} has been modify`,
+      operation
+    })
+  } catch (error) {
+    res.status(500).json({ error })
+  }
 }
 
 // Crear operación
 export const createOperation = async (req: Request, res: Response) => {
 
   const { payment_concept, amount, type, user_id } = req.body;
+  try {
+    const operation = await Operations.build({
+      payment_concept,
+      amount,
+      type,
+      user_id
+    });
+    const op = await operation.save()
 
-  const operation = await Operations.build({
-    payment_concept,
-    amount,
-    type,
-    user_id
-  });
-  await operation.save()
-
-  res.status(201).json({
-    msg: 'createOperation',
-    operation
-  })
+    res.status(201).json({
+      msg: `Operation ${type} has been created with ID: ${operation.getDataValue('id')}`,
+      operation
+    })
+  } catch (error) {
+    res.status(500).json({ error })
+  }
 }
 
 // Eliminar operación
 export const deleteOperation = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  await Operations.destroy({ where: { id } })
-  res.status(200).json({
-    msg: 'deleteOperation',
-    id
-  })
+  const { userId, operationId } = req.params
+  try {
+    await Operations.destroy({
+      where: {
+        user_id: userId,
+        id: operationId
+      }
+    })
+
+    res.status(200).json({
+      msg: `Operation with ID: ${operationId} from user with ID: ${userId} has been deleted`,
+      operationId
+    })
+
+  } catch (error) {
+    res.status(500).json({ error })
+  }
 }

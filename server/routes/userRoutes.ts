@@ -13,12 +13,15 @@ import { emailExist, isUserExistByPk, validator } from '../middlewares/validator
 const router = Router()
 
 router.get('/', getUser)
-router.get('/p/', getPaginatedUsers);
+
+router.get('/p/', getPaginatedUsers)
+
 router.get('/:id', [
   check('id', 'Is not a valid ID').isUUID(),
   check('id').custom(isUserExistByPk),
   validator
 ], getUserByPk)
+
 router.post('/', [
   check('email', 'Email should not be empty').not().isEmpty(),
   check('email', 'Email format is not valid').isEmail(),
@@ -29,6 +32,7 @@ router.post('/', [
   check('email').custom(emailExist),
   validator,
 ], createUser)
+
 router.patch('/:id', [
   check('email', 'Email should not be empty').not().isEmpty(),
   check('email', 'Email format is not valid').isEmail(),
@@ -40,7 +44,9 @@ router.patch('/:id', [
   check('id').custom(isUserExistByPk),
   validator
 ], patchUser)
+
 router.put('/:id', patchUser)
+
 router.delete('/:id', [
   check('id', 'Is not a valid ID').isUUID(),
   check('id').custom(isUserExistByPk),

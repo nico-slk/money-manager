@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { validationResult } from 'express-validator'
 import User from '../models/user';
 import { UUIDVersion } from 'express-validator/src/options';
+import Operations from '../models/operations';
 
 export const validator = (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req);
@@ -26,4 +27,12 @@ export const isUserExistByPk = async (id: UUIDVersion) => {
     throw new Error(`The user with id: ${id} doesn't exist`);
   }
 
+}
+
+export const isOperationExistByPk = async (id: UUIDVersion) => {
+  const operation = await Operations.findByPk(id)
+
+  if (!operation) {
+    throw new Error(`The operation with id: ${id} doesn't exist`);
+  }
 }
