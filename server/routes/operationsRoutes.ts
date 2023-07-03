@@ -10,7 +10,7 @@ import {
   deleteOperation,
 } from "../controllers/operationsController";
 import { check } from "express-validator";
-import { isOperationExistByPk, isUserExistByPk, validator } from '../middlewares/validator'
+import { isOperationExistByPk, isUserExistByPk, validateOperationType, validator } from '../middlewares/validator'
 
 const router = Router();
 
@@ -59,6 +59,7 @@ router.put('/:userId/:operationId', [
   check('amount', 'The amount should not be empty').not().isEmpty(),
   check('amount', 'The amount should be a number').isInt(),
   check('type', 'The operation type should not be empty').not().isEmpty(),
+  check('type').custom(validateOperationType),
   validator
 ], putOperation)
 
@@ -71,6 +72,7 @@ router.post('/:userId', [
   check('amount', 'The amount should not be empty').not().isEmpty(),
   check('amount', 'The amount should be a number').isInt(),
   check('type', 'The operation type should not be empty').not().isEmpty(),
+  check('type').custom(validateOperationType),
   validator
 ], createOperation)
 

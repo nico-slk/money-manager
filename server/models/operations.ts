@@ -17,7 +17,7 @@ const Operations = db.define('operations', {
     allowNull: false
   },
   type: {
-    type: DataTypes.STRING,
+    type: DataTypes.ENUM('EXPENSES', 'REVENUE'),
     allowNull: false
   }
 })

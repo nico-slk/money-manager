@@ -3,6 +3,7 @@ import { validationResult } from 'express-validator'
 import User from '../models/user';
 import { UUIDVersion } from 'express-validator/src/options';
 import Operations from '../models/operations';
+import Type from '../models/type';
 
 export const validator = (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req);
@@ -15,6 +16,7 @@ export const validator = (req: Request, res: Response, next: NextFunction) => {
 
 export const emailExist = async (email: string | '') => {
   const exist = await User.findOne({ where: { email } })
+
   if (exist) {
     throw new Error(`El correo ${email} ya se encuentra registrado`);
   }
@@ -34,5 +36,13 @@ export const isOperationExistByPk = async (id: UUIDVersion) => {
 
   if (!operation) {
     throw new Error(`The operation with id: ${id} doesn't exist`);
+  }
+}
+
+export const validateOperationType = async (operationType: String) => {
+  const foundedType = await Type.findOne({ where: { type: operationType } })
+
+  if (!foundedType) {
+    throw new Error(`The operation type is not valid. The type ${operationType} was not found`)
   }
 }
