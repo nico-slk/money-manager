@@ -11,10 +11,12 @@ import {
 } from "../controllers/operationsController";
 import { check } from "express-validator";
 import { isOperationExistByPk, isUserExistByPk, validateOperationType, validator } from '../middlewares/validator'
+import { validateJwt } from "../middlewares/validate-jwt";
 
 const router = Router();
 
 router.get('/all/:userId', [
+  validateJwt,
   check('userId', 'The user ID is not valid').isUUID(),
   check('userId', 'The user ID should not be empty').not().isEmpty(),
   check('userId').custom(isUserExistByPk),
@@ -22,6 +24,7 @@ router.get('/all/:userId', [
 ], getAllOperationsByUserId)
 
 router.get('/:userId', [
+  validateJwt,
   check('userId', 'The user ID is not valid').isUUID(),
   check('userId', 'The user ID should not be empty').not().isEmpty(),
   check('userId').custom(isUserExistByPk),
@@ -29,18 +32,21 @@ router.get('/:userId', [
 ], getPaginateOperationsByUserId)
 
 router.get('/rev/:userId', [
+  validateJwt,
   check('userId', 'The user ID is not valid').isUUID(),
   check('userId').custom(isUserExistByPk),
   validator
 ], getRevenuesOperationsByUserId)
 
 router.get('/exp/:userId', [
+  validateJwt,
   check('userId', 'The user ID is not valid').isUUID(),
   check('userId').custom(isUserExistByPk),
   validator
 ], getExpensesOperationsByUserId)
 
 router.get('/:userId/:operationId', [
+  validateJwt,
   check('userId', 'The user ID is not valid').isUUID(),
   check('userId').custom(isUserExistByPk),
   check('operationId', 'The user ID is not valid').isUUID(),
@@ -49,6 +55,7 @@ router.get('/:userId/:operationId', [
 ], getOperationById)
 
 router.put('/:userId/:operationId', [
+  validateJwt,
   check('userId', 'The user ID is not valid').isUUID(),
   check('userId').custom(isUserExistByPk),
   check('operationId', 'The user ID is not valid').isUUID(),
@@ -64,6 +71,7 @@ router.put('/:userId/:operationId', [
 ], putOperation)
 
 router.post('/:userId', [
+  validateJwt,
   check('userId', 'The user ID is not valid').isUUID(),
   check('userId').custom(isUserExistByPk),
   check('payment_concept', 'The payment concept should not be empty').not().isEmpty(),
@@ -77,6 +85,7 @@ router.post('/:userId', [
 ], createOperation)
 
 router.delete('/:userId/:operationId', [
+  validateJwt,
   check('userId', 'The user ID is not valid').isUUID(),
   check('userId').custom(isUserExistByPk),
   check('operationId', 'The user ID is not valid').isUUID(),

@@ -36,8 +36,8 @@ class Server {
   }
 
   routes() {
-    this.app.use(this.apiPath.operation, operationRouter);
     this.app.use(this.apiPath.login, loginRouter)
+    this.app.use(this.apiPath.operation, operationRouter);
     this.app.use(this.apiPath.user, userRouter)
   }
 
