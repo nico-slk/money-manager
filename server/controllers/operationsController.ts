@@ -141,15 +141,17 @@ export const putOperation = async (req: Request, res: Response) => {
 // Crear operación
 export const createOperation = async (req: Request, res: Response) => {
 
-  const { payment_concept, amount, type, user_id } = req.body;
+  const { payment_concept, amount, type, reason } = req.body;
+  const { userId } = req.params
   try {
     const operation = await Operations.build({
       payment_concept,
       amount,
       type,
-      user_id
+      reason,
+      user_id: userId
     });
-    const op = await operation.save()
+    await operation.save()
 
     res.status(201).json({
       msg: `Operation ${type} has been created with ID: ${operation.getDataValue('id')}`,

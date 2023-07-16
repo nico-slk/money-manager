@@ -3,8 +3,10 @@ import cors from 'cors';
 import operationRouter from '../routes/operationsRoutes'
 import loginRouter from '../routes/auth'
 import userRouter from '../routes/userRoutes'
+import reasonRouter from '../routes/reasonRoutes'
 import '../models/operations.js'
 import '../models/user.js'
+import '../models/reason.js'
 
 import db from '../db/conection';
 
@@ -15,7 +17,8 @@ class Server {
   private apiPath = {
     operation: '/api/operation',
     user: '/api/user',
-    login: '/api/login'
+    login: '/api/login',
+    reason: '/api/reason',
   }
 
   constructor() {
@@ -36,9 +39,10 @@ class Server {
   }
 
   routes() {
-    this.app.use(this.apiPath.login, loginRouter)
+    this.app.use(this.apiPath.login, loginRouter);
     this.app.use(this.apiPath.operation, operationRouter);
-    this.app.use(this.apiPath.user, userRouter)
+    this.app.use(this.apiPath.user, userRouter);
+    this.app.use(this.apiPath.reason, reasonRouter);
   }
 
   async dbConection() {

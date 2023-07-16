@@ -19,6 +19,10 @@ const Operations = db.define('operations', {
   type: {
     type: DataTypes.ENUM('EXPENSES', 'REVENUE'),
     allowNull: false
+  },
+  reason: {
+    type: DataTypes.STRING,
+    allowNull: false
   }
 })
 

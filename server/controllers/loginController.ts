@@ -16,7 +16,7 @@ export const login = async (req: Request, res: Response) => {
         message: `The user with email: ${email} doesn't exist`
       })
     }
-    // Compare nota hashed password from login and hashed passwords from DB
+    // Compare not a hashed password from login and hashed passwords from DB
     const validPassword = bcryptjs.compareSync(password, user.getDataValue('password'))
     if (!validPassword) {
       return res.status(400).json({

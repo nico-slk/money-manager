@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import db from '../db/conection'
 import Operations from "./operations";
+import Reason from "./reason";
 
 const User = db.define('users', {
   id: {
@@ -31,6 +32,16 @@ User.hasMany(Operations, {
 })
 
 Operations.belongsTo(User, {
+  foreignKey: 'user_id',
+  targetKey: 'id'
+})
+
+User.hasMany(Reason, {
+  foreignKey: 'user_id',
+  sourceKey: 'id'
+})
+
+Reason.belongsTo(User, {
   foreignKey: 'user_id',
   targetKey: 'id'
 })

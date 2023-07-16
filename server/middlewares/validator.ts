@@ -4,6 +4,7 @@ import User from '../models/user';
 import { UUIDVersion } from 'express-validator/src/options';
 import Operations from '../models/operations';
 import Type from '../models/type';
+import Reason from '../models/reason';
 
 export const validator = (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req);
@@ -44,5 +45,13 @@ export const validateOperationType = async (operationType: String) => {
 
   if (!foundedType) {
     throw new Error(`The operation type is not valid. The type ${operationType} was not found`)
+  }
+}
+
+export const validateReason = async (reasonToFind: String) => {
+  const reasonFound = await Reason.findOne({ where: { name: reasonToFind } })
+
+  if (!reasonFound) {
+    throw new Error(`The operation type is not valid. The type ${reasonToFind} was not found`)
   }
 }
